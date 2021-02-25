@@ -89,47 +89,34 @@ public class MecanumTeleOp extends LinearOpMode {
                 robot.backLeft.setPower(v4);
             }
 
-            if (true) {
-
-            } else if (true ) {
-
-            } else {
-
-            }
-
-
             if (gamepad2.left_trigger > 0) {
                 robot.launcherRight.setPower(1);
                 robot.launcherLeft.setPower(1);
-            } else if(//////////){
+            } else if (gamepad2.left_bumper){
+                robot.launcherRight.setPower(0.6);
+                robot.launcherLeft.setPower(0.6);
+            } else {
                 robot.launcherRight.setPower(0);
                 robot.launcherLeft.setPower(0);
             }
 
-            if(gamepad2.dpad_left) {
-                robot.launcherLeft.setPower(0.6);
-                robot.launcherRight.setPower(0.6);
-            }
-
-
-
-            if (gamepad2.right_trigger > 0) {
+            if (gamepad2.dpad_up) {
                 robot.ramp.setPower(1);
+            } else if (gamepad2.dpad_down){
+                robot.ramp.setPower(-1);
             } else {
                 robot.ramp.setPower(0);
             }
-
-            if (gamepad2.a) {
+            if (gamepad2.y) {
                 robot.wheelIntake.setPosition(1);
-
-            } else if (gamepad2.left_bumper){
+            } else if (gamepad2.a){
                 robot.wheelIntake.setPosition(0);
             } else {
                 robot.wheelIntake.setPosition(0.5);
             }
 
 
-            if (gamepad2.b) {
+            if (gamepad2.right_trigger > 0) {
                 robot.flicker.setPosition(0);
             } else {
                 robot.flicker.setPosition(0.6);

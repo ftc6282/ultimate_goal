@@ -5,8 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name="Pushbot: Auto Drive Forward  2 inches", group="Pushbot")
-public class MeetZero extends MecanumAutonomous {
+@Autonomous(name="Wobble Powershot", group="Pushbot")
+public class WobblePowershot extends MecanumAutonomous {
 
     //MecanumHardware robot = new MecanumHardware();   // Use a Pushbot's hardware
     private ElapsedTime runtime = new ElapsedTime();
@@ -52,9 +52,43 @@ public class MeetZero extends MecanumAutonomous {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        drive(DRIVE_SPEED, 40, 20);
+        drive(DRIVE_SPEED, 40, 20); // Moves to wobble goal square
         sleep(800);
-        drive(DRIVE_SPEED, -2, 2);
+        drive(DRIVE_SPEED, -10, 2);
+
+        sleep(500);
+        strafeLeft(DRIVE_SPEED, 7, 2);
+
+        turn(DRIVE_SPEED,2,0,1);
+
+
+        robot.launcherLeft.setPower(1);
+        robot.launcherRight.setPower(1);
+        sleep(3000);
+        robot.flicker.setPosition(0);
+        sleep(1000);
+        robot.flicker.setPosition(0.6);
+        strafeLeft(DRIVE_SPEED, 4, 2);
+
+        sleep(3000);
+        robot.flicker.setPosition(0);
+        sleep(1000);
+        robot.flicker.setPosition(0.6);
+        sleep(500);
+        strafeLeft(DRIVE_SPEED, 4, 2);
+
+
+        sleep(3000);
+        robot.flicker.setPosition(0);
+        sleep(1000);
+        robot.flicker.setPosition(0.6);
+        sleep(500);
+        robot.launcherRight.setPower(0);
+        robot.launcherLeft.setPower(0);
+        sleep(1000);
+
+        drive(DRIVE_SPEED,7, 4);
+        sleep(500);
 
     }
     //This is the end of the autonomous, rest is public voids

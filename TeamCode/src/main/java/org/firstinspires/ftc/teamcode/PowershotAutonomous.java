@@ -52,8 +52,10 @@ public class PowershotAutonomous extends MecanumAutonomous {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
+
+
         sleep(500);
-        drive(DRIVE_SPEED, 2, 2 );
+        drive(DRIVE_SPEED, 25 , 5 );
         sleep(1000);
 
         robot.launcherLeft.setPower(1);
@@ -81,7 +83,7 @@ public class PowershotAutonomous extends MecanumAutonomous {
         robot.launcherLeft.setPower(0);
         sleep(1000);
 
-        drive(DRIVE_SPEED,35, 4);
+        drive(DRIVE_SPEED,7, 4);
         sleep(500);
 
 
