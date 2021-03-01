@@ -6,6 +6,11 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+
 
 @TeleOp(name="MecanumTeleop", group ="Linear Opmode")
 public class MecanumTeleOp extends LinearOpMode {
@@ -29,12 +34,28 @@ public class MecanumTeleOp extends LinearOpMode {
         robot.backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
+        // make sure the imu gyro is calibrated before continuing.
+        while (!isStopRequested() && !robot.gyro.isGyroCalibrated())
+        {
+            sleep(50);
+            idle();
+        }
+
+        telemetry.addData("Mode", "waiting for start");
+        telemetry.addData("imu calib status", robot.gyro.getCalibrationStatus().toString());
+        telemetry.update();
+
         waitForStart();
         runtime.reset();
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
             telemetry.addLine("Opmode Active");
+
+            Orientation orientation = robot.gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+            telemetry.addData("Angle 1", orientation.firstAngle);
+            telemetry.addData("Angle 2", orientation.secondAngle);
+            telemetry.addData("Angle 3", orientation.thirdAngle);
 
             double left_stick_x = -gamepad1.left_stick_x;
             double left_stick_y = gamepad1.left_stick_y;
@@ -108,11 +129,11 @@ public class MecanumTeleOp extends LinearOpMode {
                 robot.ramp.setPower(0);
             }
             if (gamepad2.y) {
-                robot.wheelIntake.setPosition(1);
+                robot.wheelIntake.setPower(1);
             } else if (gamepad2.a){
-                robot.wheelIntake.setPosition(0);
+                robot.wheelIntake.setPower(-1);
             } else {
-                robot.wheelIntake.setPosition(0.5);
+                robot.wheelIntake.setPower(0);
             }
 
 

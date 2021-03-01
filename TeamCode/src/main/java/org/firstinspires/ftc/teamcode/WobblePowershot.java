@@ -90,6 +90,7 @@ public class WobblePowershot extends MecanumAutonomous {
         drive(DRIVE_SPEED,7, 4);
         sleep(500);
 
+        faceAngle(90);
     }
     //This is the end of the autonomous, rest is public voids
 

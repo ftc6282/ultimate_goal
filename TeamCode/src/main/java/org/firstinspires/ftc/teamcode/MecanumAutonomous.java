@@ -4,6 +4,11 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+
 public abstract class MecanumAutonomous extends LinearOpMode {
 
     MecanumHardware robot = new MecanumHardware();
@@ -160,6 +165,63 @@ public abstract class MecanumAutonomous extends LinearOpMode {
                 writeTargetPositionTelemetry(newFrontLeftTarget, newBackLeftTarget, newFrontRightTarget, newBackRightTarget);
             }
             stopDriveMotors();
+        }
+    }
+
+    public void faceAngle(float targetAngle){
+
+        while (!isStopRequested() && !robot.gyro.isGyroCalibrated())
+        {
+            sleep(50);
+            idle();
+        }
+
+        telemetry.addData("Mode", "waiting for start");
+        telemetry.addData("imu calib status", robot.gyro.getCalibrationStatus().toString());
+
+
+        Orientation orientation = robot.gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        telemetry.addData("Angle 1", orientation.firstAngle);
+        telemetry.addData("Angle 2", orientation.secondAngle);
+        telemetry.addData("Angle 3", orientation.thirdAngle);
+        telemetry.update();
+
+//        while(target angle not equal to actual angle)
+//            (get target angle - actual angle) / 2 / 100 = motor power
+//            set motor to motor power
+//            if actual angle is within + - 1 degree of target angle
+//                break;
+
+        robot.frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        while(orientation.firstAngle != targetAngle) {
+            orientation = robot.gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+            float motorPower = (targetAngle - orientation.firstAngle) / 2 / 100;
+            telemetry.addData("power", motorPower);
+            if (orientation.firstAngle > targetAngle) {
+                telemetry.addData("direction", "idk first one");
+                robot.frontLeft.setPower(motorPower);
+                robot.backLeft.setPower(motorPower);
+                robot.frontRight.setPower(-motorPower);
+                robot.backRight.setPower(-motorPower);
+            } else if (orientation.firstAngle < targetAngle) {
+                telemetry.addData("direction", "idk second one");
+                robot.frontLeft.setPower(-motorPower);
+                robot.backLeft.setPower(-motorPower);
+                robot.frontRight.setPower(motorPower);
+                robot.backRight.setPower(motorPower);
+            } else {
+                telemetry.addData("direction", "idk nothing one");
+                robot.frontLeft.setPower(0);
+                robot.backLeft.setPower(0);
+                robot.frontRight.setPower(0);
+                robot.backRight.setPower(0);
+            }
+            telemetry.update();
+
         }
     }
 
