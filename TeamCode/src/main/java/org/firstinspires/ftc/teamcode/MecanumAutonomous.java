@@ -197,17 +197,29 @@ public abstract class MecanumAutonomous extends LinearOpMode {
         robot.frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        while(orientation.firstAngle != targetAngle) {
+        // Set up a PID controller
+        resetPid(.02, 0.008, 0.001, 30);
+
+        int atTargetCounter = 0;
+        while(true) {
             orientation = robot.gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
             float currentAngle = orientation.firstAngle;
             float error = targetAngle - currentAngle;
-            float motorPower = (error) / 2 / 100;
-
+            double motorPower = pidControl(error);
+            telemetry.addData("Motor Power:", motorPower);
+            telemetry.addData("Error:", error);
+            telemetry.addLine("Error Series:" + error);
 
             // Makes it so if motorPower gets to like 1.0x10^-whatever, it just sets it to zero
-            if(error > -0.5 && error < 0.5){
-                break;
+            // But only do this if it's constant for a few iterations in case we cross over the value
+            if(error > -0.1 && error < 0.1){
+                atTargetCounter++;
+                if (atTargetCounter > 200) {
+                    break;
+                }
+            } else {
+                atTargetCounter = 0;
             }
 
             robot.frontLeft.setPower(-motorPower);
@@ -218,6 +230,47 @@ public abstract class MecanumAutonomous extends LinearOpMode {
             telemetry.update();
 
         }
+    }
+
+    private double integral = 0; // Too lazy to make a class to hold these - just don't run more than one of these at a time
+    private double previousError = 0; // Also don't forget to reset them between invocations
+    private double Kp;
+    private double Ki;
+    private double Kd;
+    private double integralCutoff;
+    private ElapsedTime pidTimer;
+    private void resetPid(double Kp, double Ki, double Kd, double integralCutoff) {
+        this.integral = 0;
+        this.previousError = 0;
+        this.pidTimer = new ElapsedTime();
+        this.Kp = Kp;
+        this.Ki = Ki;
+        this.Kd = Kd;
+        this.integralCutoff = integralCutoff;
+    }
+    private double pidControl(float error) {
+        double elapsedTime = pidTimer.seconds();
+        pidTimer.reset();
+        // Kp and Ki are one line
+        double proportionalValue = error * Kp;
+        double derivative = (error - previousError) / elapsedTime * Kd;
+
+        // Reset our integral value if we cross over our taret value to prevent continuous overshooting
+        if ((previousError > 0 && error <= 0) || (previousError < 0 && error >= 0)) {
+            integral = 0;
+        }
+
+        previousError = error;
+
+        if (Math.abs(error) < integralCutoff) {
+            integral = integral + (error * Ki * elapsedTime);
+        }
+
+        telemetry.addData("Proportional: ", proportionalValue);
+        telemetry.addData("Integral: ", integral);
+        telemetry.addData("Derivative: ", derivative);
+        double power = proportionalValue + integral + derivative;
+        return power;
     }
 
     public void strafeRight(double speed, double inches, double timeoutS, boolean extraFrontRightPower)
