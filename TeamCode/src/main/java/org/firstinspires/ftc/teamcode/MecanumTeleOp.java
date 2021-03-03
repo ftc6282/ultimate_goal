@@ -129,9 +129,9 @@ public class MecanumTeleOp extends LinearOpMode {
                 robot.ramp.setPower(0);
             }
             if (gamepad2.y) {
-                robot.wheelIntake.setPower(1);
+                robot.wheelIntake.setPower(0.6);
             } else if (gamepad2.a){
-                robot.wheelIntake.setPower(-1);
+                robot.wheelIntake.setPower(-0.6);
             } else {
                 robot.wheelIntake.setPower(0);
             }

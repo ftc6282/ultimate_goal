@@ -199,27 +199,22 @@ public abstract class MecanumAutonomous extends LinearOpMode {
 
         while(orientation.firstAngle != targetAngle) {
             orientation = robot.gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-            float motorPower = (targetAngle - orientation.firstAngle) / 2 / 100;
-            telemetry.addData("power", motorPower);
-            if (orientation.firstAngle > targetAngle) {
-                telemetry.addData("direction", "idk first one");
-                robot.frontLeft.setPower(motorPower);
-                robot.backLeft.setPower(motorPower);
-                robot.frontRight.setPower(-motorPower);
-                robot.backRight.setPower(-motorPower);
-            } else if (orientation.firstAngle < targetAngle) {
-                telemetry.addData("direction", "idk second one");
-                robot.frontLeft.setPower(-motorPower);
-                robot.backLeft.setPower(-motorPower);
-                robot.frontRight.setPower(motorPower);
-                robot.backRight.setPower(motorPower);
-            } else {
-                telemetry.addData("direction", "idk nothing one");
-                robot.frontLeft.setPower(0);
-                robot.backLeft.setPower(0);
-                robot.frontRight.setPower(0);
-                robot.backRight.setPower(0);
+
+            float currentAngle = orientation.firstAngle;
+            float error = targetAngle - currentAngle;
+            float motorPower = (error) / 2 / 100;
+
+
+            // Makes it so if motorPower gets to like 1.0x10^-whatever, it just sets it to zero
+            if(error > -0.5 && error < 0.5){
+                break;
             }
+
+            robot.frontLeft.setPower(-motorPower);
+            robot.backLeft.setPower(-motorPower);
+            robot.frontRight.setPower(motorPower);
+            robot.backRight.setPower(motorPower);
+
             telemetry.update();
 
         }
