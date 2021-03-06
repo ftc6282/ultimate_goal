@@ -11,7 +11,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 public abstract class MecanumAutonomous extends LinearOpMode {
 
-    MecanumHardware robot = new MecanumHardware();
+    protected MecanumHardware robot = new MecanumHardware();
 
     private ElapsedTime runtime = new ElapsedTime();
 
