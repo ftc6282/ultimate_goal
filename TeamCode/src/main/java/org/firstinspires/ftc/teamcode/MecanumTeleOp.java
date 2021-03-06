@@ -78,25 +78,49 @@ public class MecanumTeleOp extends LinearOpMode {
             telemetry.addData("Joystick: %s", "" + left_stick_x + ", " +  left_stick_y+ ", " + gamepad1.right_stick_x);
             if (left_stick_x == 0 && left_stick_y == 0 && gamepad1.right_stick_x == 0) {
                 robot.frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                telemetry.addData("frontright", robot.frontRight.getCurrentPosition());
+
                 robot.frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                telemetry.addData("frontleft", robot.frontLeft.getCurrentPosition());
+
                 robot.backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                telemetry.addData("backright", robot.backRight.getCurrentPosition());
+
                 robot.backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                telemetry.addData("backleft", robot.backLeft.getCurrentPosition());
+
 
                 robot.frontRight.setTargetPosition(0);
                 robot.frontLeft.setTargetPosition(0);
                 robot.backRight.setTargetPosition(0);
                 robot.backLeft.setTargetPosition(0);
 
+
                 robot.frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                telemetry.addData("frontright", robot.frontRight.getCurrentPosition());
+
                 robot.frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                telemetry.addData("frontleft", robot.frontLeft.getCurrentPosition());
+
                 robot.backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                telemetry.addData("backright", robot.backRight.getCurrentPosition());
+
                 robot.backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                telemetry.addData("backleft", robot.backLeft.getCurrentPosition());
 
             } else {
                 robot.frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                telemetry.addData("frontright", robot.frontRight.getCurrentPosition());
+
                 robot.frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                telemetry.addData("frontleft", robot.frontLeft.getCurrentPosition());
+
                 robot.backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                telemetry.addData("backright", robot.backRight.getCurrentPosition());
+
                 robot.backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                telemetry.addData("backleft", robot.backLeft.getCurrentPosition());
+
             }
             if (gamepad1.right_bumper) {
                 robot.frontRight.setPower(v1 * 0.5);

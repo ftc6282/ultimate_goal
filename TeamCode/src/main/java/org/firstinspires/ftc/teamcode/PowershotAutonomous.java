@@ -57,6 +57,7 @@ public class PowershotAutonomous extends MecanumAutonomous {
         sleep(500);
         drive(DRIVE_SPEED, 25 , 5 );
         sleep(1000);
+        faceAngle(0);
 
         robot.launcherLeft.setPower(1);
         robot.launcherRight.setPower(1);

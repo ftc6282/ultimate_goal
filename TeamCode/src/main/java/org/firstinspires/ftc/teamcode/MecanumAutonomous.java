@@ -82,9 +82,13 @@ public abstract class MecanumAutonomous extends LinearOpMode {
 
             // Determine new target position, and pass to motor controller
             newFrontLeftTarget = robot.frontLeft.getCurrentPosition() + (int) (-leftInches * COUNTS_PER_INCH);
+            telemetry.addData("frontleft", robot.frontLeft.getCurrentPosition());
             newBackLeftTarget = robot.backLeft.getCurrentPosition() + (int) (-leftInches * COUNTS_PER_INCH);
+            telemetry.addData("backleft", robot.backLeft.getCurrentPosition());
             newFrontRightTarget = robot.frontRight.getCurrentPosition() + (int) (-rightInches * COUNTS_PER_INCH);
+            telemetry.addData("frontright", robot.frontRight.getCurrentPosition());
             newBackRightTarget = robot.backRight.getCurrentPosition() + (int) (-rightInches * COUNTS_PER_INCH);
+            telemetry.addData("backright", robot.backRight.getCurrentPosition());
             robot.frontLeft.setTargetPosition(newFrontLeftTarget);
             robot.backLeft.setTargetPosition(newBackLeftTarget);
             robot.frontRight.setTargetPosition(newFrontRightTarget);
