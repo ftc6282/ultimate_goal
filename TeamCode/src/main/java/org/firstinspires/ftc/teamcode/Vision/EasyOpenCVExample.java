@@ -21,10 +21,12 @@
 
 package org.firstinspires.ftc.teamcode.Vision;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.MecanumAutonomous;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
@@ -37,8 +39,8 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 import org.openftc.easyopencv.OpenCvPipeline;
 
-@TeleOp(name="VisionTesting")
-public class EasyOpenCVExample extends LinearOpMode
+@Autonomous(name="VisionTesting")
+public class EasyOpenCVExample extends MecanumAutonomous
 {
     OpenCvCamera webcam;
     SkystoneDeterminationPipeline pipeline;
@@ -51,6 +53,8 @@ public class EasyOpenCVExample extends LinearOpMode
         webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "LogitechWebcam"), cameraMonitorViewId);
         pipeline = new SkystoneDeterminationPipeline();
         webcam.setPipeline(pipeline);
+
+        robot.initialize(hardwareMap);
 
         // We set the viewport policy to optimized view so the preview doesn't appear 90 deg
         // out when the RC activity is in portrait. We do our actual image processing assuming
@@ -66,16 +70,27 @@ public class EasyOpenCVExample extends LinearOpMode
             }
         });
 
-        waitForStart();
-
-        while (opModeIsActive())
-        {
+        while(!this.isStarted()) {
             telemetry.addData("Analysis", pipeline.getAnalysis());
             telemetry.addData("Position", pipeline.position);
             telemetry.update();
+        }
 
-            // Don't burn CPU cycles busy-looping in this sample
-            sleep(50);
+        telemetry.addData("Analysis", pipeline.getAnalysis());
+        telemetry.addData("Position", pipeline.position);
+        telemetry.update();
+
+        // Don't burn CPU cycles busy-looping in this sample
+        sleep(25);
+
+        SkystoneDeterminationPipeline.RingPosition pos = pipeline.position;
+
+        if(pos == SkystoneDeterminationPipeline.RingPosition.FOUR){
+            drive(.5, 5, 2);
+        }else if(pos == SkystoneDeterminationPipeline.RingPosition.ONE){
+            strafeLeft(.4, 3, 2);
+        }else{
+            strafeRight(.5, 7, 2, false);
         }
     }
 
@@ -100,13 +115,13 @@ public class EasyOpenCVExample extends LinearOpMode
         /*
          * The core values which define the location and size of the sample regions
          */
-        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(181,98);
+        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(250,170);
 
-        static final int REGION_WIDTH = 35;
-        static final int REGION_HEIGHT = 25;
+        static final int REGION_WIDTH = 50;
+        static final int REGION_HEIGHT = 40;
 
         final int FOUR_RING_THRESHOLD = 150;
-        final int ONE_RING_THRESHOLD = 135;
+        final int ONE_RING_THRESHOLD = 132;
 
         Point region1_pointA = new Point(
                 REGION1_TOPLEFT_ANCHOR_POINT.x,
@@ -166,13 +181,6 @@ public class EasyOpenCVExample extends LinearOpMode
             }else{
                 position = RingPosition.NONE;
             }
-
-            Imgproc.rectangle(
-                    input, // Buffer to draw on
-                    region1_pointA, // First point which defines the rectangle
-                    region1_pointB, // Second point which defines the rectangle
-                    GREEN, // The color the rectangle is drawn in
-                    -1); // Negative thickness means solid fill
 
             return input;
         }
