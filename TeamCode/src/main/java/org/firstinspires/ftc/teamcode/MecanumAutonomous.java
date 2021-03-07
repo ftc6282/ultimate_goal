@@ -21,7 +21,6 @@ public abstract class MecanumAutonomous extends LinearOpMode {
     static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
     static final double DRIVE_SPEED = 0.6;
-    static final double SLOW_DRIVE_SPEED  = 0.3;
 
     public void drive(double speed, double inches, double timeoutS) {
         int newFrontLeftTarget;
@@ -210,7 +209,7 @@ public abstract class MecanumAutonomous extends LinearOpMode {
 
 
             // Makes it so if motorPower gets to like 1.0x10^-whatever, it just sets it to zero
-            if(error > -0.5 && error < 0.5){
+            if(error > -1 && error < 1){
                 break;
             }
 
@@ -222,6 +221,11 @@ public abstract class MecanumAutonomous extends LinearOpMode {
             telemetry.update();
 
         }
+
+        robot.frontLeft.setPower(0);
+        robot.backLeft.setPower(0);
+        robot.frontRight.setPower(0);
+        robot.backRight.setPower(0);
     }
 
     public void strafeRight(double speed, double inches, double timeoutS, boolean extraFrontRightPower)

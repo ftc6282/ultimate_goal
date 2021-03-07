@@ -6,6 +6,12 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.Vision.VisionPipeline;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
+
 public class MecanumHardware {
 
     public DcMotor frontRight = null;
@@ -17,7 +23,12 @@ public class MecanumHardware {
     public DcMotor ramp = null;
     public DcMotor wheelIntake = null;
     public Servo flicker = null;
+    public Servo wobble = null;
     public BNO055IMU gyro = null;
+
+    private OpenCvCamera webcam;
+    public VisionPipeline pipeline;
+
     //public Servo shooterServo = null;
     //public Servo intakeServo = null;
     //public Vuforia webcam = null;
@@ -43,6 +54,9 @@ public class MecanumHardware {
         flicker = hardwareMap.get(Servo.class, "flicker");
         flicker.setPosition(0.6);
 
+        wobble = hardwareMap.get(Servo.class, "wobble");
+        wobble.setPosition(1);
+
         gyro = hardwareMap.get(BNO055IMU.class, "gyro");
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -59,6 +73,31 @@ public class MecanumHardware {
 
         gyro.initialize(parameters);
 
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "LogitechWebcam"), cameraMonitorViewId);
+        pipeline = new VisionPipeline();
+        webcam.setPipeline(pipeline);
+    }
 
+    public void startVisionProcessing() {
+        webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
+        {
+            @Override
+            public void onOpened()
+            {
+                webcam.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
+            }
+        });
+    }
+
+    public void stopVisionProcessing(){
+        webcam.stopStreaming();
+    }
+
+    public void resetEncoders() {
+        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 }
