@@ -171,7 +171,7 @@ public abstract class MecanumAutonomous extends LinearOpMode {
         }
     }
 
-    public void faceAngle(float targetAngle){
+    public void faceAngle(float targetAngle, float extraPower){
 
         while (!isStopRequested() && !robot.gyro.isGyroCalibrated())
         {
@@ -205,7 +205,7 @@ public abstract class MecanumAutonomous extends LinearOpMode {
 
             float currentAngle = orientation.firstAngle;
             float error = targetAngle - currentAngle;
-            float motorPower = (error) / 2 / 100;
+            float motorPower = (error) / 2 / 100 * extraPower;
 
 
             // Makes it so if motorPower gets to like 1.0x10^-whatever, it just sets it to zero
