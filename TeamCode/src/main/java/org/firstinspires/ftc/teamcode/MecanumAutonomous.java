@@ -171,7 +171,7 @@ public abstract class MecanumAutonomous extends LinearOpMode {
         }
     }
 
-    public void faceAngle(float targetAngle, float extraPower){
+    public void faceAngle(float targetAngle){
 
         while (!isStopRequested() && !robot.gyro.isGyroCalibrated())
         {
@@ -189,23 +189,20 @@ public abstract class MecanumAutonomous extends LinearOpMode {
         telemetry.addData("Angle 3", orientation.thirdAngle);
         telemetry.update();
 
-//        while(target angle not equal to actual angle)
-//            (get target angle - actual angle) / 2 / 100 = motor power
-//            set motor to motor power
-//            if actual angle is within + - 1 degree of target angle
-//                break;
-
         robot.frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        PIDController pid = new PIDController(0.005, 0.001, 0, 15);
+        pid.setTelemetry(telemetry);
+
         while(orientation.firstAngle != targetAngle) {
             orientation = robot.gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
             float currentAngle = orientation.firstAngle;
-            float error = targetAngle - currentAngle;
-            float motorPower = (error) / 2 / 100 * extraPower;
+            double error = targetAngle - currentAngle;
+            double motorPower = pid.control(error);
 
 
             // Makes it so if motorPower gets to like 1.0x10^-whatever, it just sets it to zero

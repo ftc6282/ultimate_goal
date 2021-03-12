@@ -30,16 +30,16 @@ public class WobblePowershotAuton extends MecanumAutonomous {
         sleep(500);
         drive(DRIVE_SPEED, 23 , 5 );
         sleep(200);
-        faceAngle(0, 2);
+        faceAngle(0);
 
         robot.launcherLeft.setPower(1);
         robot.launcherRight.setPower(1);
         fireShot();
         strafeLeft(DRIVE_SPEED, 4, 1);
-        faceAngle(0,2);
+        faceAngle(0);
         fireShot();
         strafeLeft(DRIVE_SPEED, 4, 1);
-        faceAngle(0,2);
+        faceAngle(0);
         fireShot();
         robot.launcherRight.setPower(0);
         robot.launcherLeft.setPower(0);
@@ -67,7 +67,7 @@ public class WobblePowershotAuton extends MecanumAutonomous {
         }else{
             drive(DRIVE_SPEED, 13, 1);
             sleep(200);
-            faceAngle(0,2);
+            faceAngle(0);
             strafeRight(DRIVE_SPEED, 25, 3, false);
             robot.wobble.setPosition(0);
             sleep(200);
