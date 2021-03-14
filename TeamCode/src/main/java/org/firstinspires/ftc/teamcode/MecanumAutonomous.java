@@ -194,7 +194,7 @@ public abstract class MecanumAutonomous extends LinearOpMode {
         robot.frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        PIDController pid = new PIDController(0.005, 0.001, 0, 15);
+        PIDController pid = new PIDController(0.02, 0.004, 0, 15);
         pid.setTelemetry(telemetry);
 
         while(orientation.firstAngle != targetAngle) {
