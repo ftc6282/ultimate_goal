@@ -74,6 +74,7 @@ public class WobblePowershotAuton extends MecanumAutonomous {
             strafeLeft(DRIVE_SPEED, 10, 1);
 
         }
+        faceAngle(0);
     }
 
     private void fireShot() {

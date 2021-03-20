@@ -28,6 +28,8 @@ public class MecanumTeleOp extends LinearOpMode {
 
         robot.initialize(hardwareMap);
 
+        float newZero = 0;
+
         robot.frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -166,7 +168,62 @@ public class MecanumTeleOp extends LinearOpMode {
             } else {
                 robot.flicker.setPosition(0.6);
             }
+
+            if(gamepad1.a){
+                faceAngle(newZero);
+            }else if(gamepad1.dpad_right){
+                newZero --;
+                faceAngle(newZero);
+            }else if(gamepad1.dpad_left){
+                newZero++;
+                faceAngle(newZero);
+            }
+
             telemetry.update();
         }
+    }
+
+    public void faceAngle(float targetAngle){
+
+        Orientation orientation = robot.gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        telemetry.addData("Angle 1", orientation.firstAngle);
+        telemetry.addData("Angle 2", orientation.secondAngle);
+        telemetry.addData("Angle 3", orientation.thirdAngle);
+        telemetry.update();
+
+        robot.frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        PIDController pid = new PIDController(0.02, 0.004, 0, 15);
+        pid.setTelemetry(telemetry);
+
+        while(orientation.firstAngle != targetAngle && opModeIsActive() && !gamepad1.dpad_down) {
+            orientation = robot.gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+
+            float currentAngle = orientation.firstAngle;
+            double error = targetAngle - currentAngle;
+            double motorPower = pid.control(error);
+
+
+            // Makes it so if motorPower gets to like 1.0x10^-whatever, it just sets it to zero
+            if(error > -1 && error < 1){
+                break;
+            }
+
+            robot.frontLeft.setPower(-motorPower);
+            robot.backLeft.setPower(-motorPower);
+            robot.frontRight.setPower(motorPower);
+            robot.backRight.setPower(motorPower);
+
+            telemetry.update();
+
+        }
+
+        robot.frontLeft.setPower(0);
+        robot.backLeft.setPower(0);
+        robot.frontRight.setPower(0);
+        robot.backRight.setPower(0);
     }
 }
