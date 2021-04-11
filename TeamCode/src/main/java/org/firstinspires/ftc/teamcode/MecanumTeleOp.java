@@ -151,7 +151,6 @@ public class MecanumTeleOp extends LinearOpMode {
                 double speed = distance / time;
                 double rps = speed * 1000 / 1120;
                 telemetry.addData("rps: ", rps);
-                robot.launcherRight.setPower(0.6);
 
                 double target = 1.5;
                 double current = rps;
