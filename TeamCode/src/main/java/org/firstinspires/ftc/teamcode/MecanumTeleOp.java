@@ -140,8 +140,26 @@ public class MecanumTeleOp extends LinearOpMode {
                 robot.launcherRight.setPower(1);
                 robot.launcherLeft.setPower(1);
             } else if (gamepad2.left_bumper){
+                int time = 10;
+
+                int position1 = robot.launcherRight.getCurrentPosition();
+                sleep(time);
+                int position2 = robot.launcherRight.getCurrentPosition();
+
+                double distance = position2 - position1;
+
+                double speed = distance / time;
+                double rps = speed * 1000 / 1120;
+                telemetry.addData("rps: ", rps);
                 robot.launcherRight.setPower(0.6);
-                robot.launcherLeft.setPower(0.6);
+
+                double target = 1.5;
+                double current = rps;
+                if(current < target){
+                    robot.launcherRight.setPower(1);
+                }else{
+                    robot.launcherRight.setPower(0.6);
+                }
             } else {
                 robot.launcherRight.setPower(0);
                 robot.launcherLeft.setPower(0);
@@ -154,6 +172,7 @@ public class MecanumTeleOp extends LinearOpMode {
             } else {
                 robot.ramp.setPower(0);
             }
+
             if (gamepad2.y) {
                 robot.wheelIntake.setPower(0.6);
             } else if (gamepad2.a){

@@ -26,9 +26,9 @@ public class WobblePowershotAuton extends MecanumAutonomous {
         robot.stopVisionProcessing();
         telemetry.addData("Rings", numRings);
         telemetry.update();
-
+//line 30 to 35 may need to be changed
         sleep(500);
-        drive(DRIVE_SPEED, 23 , 5 );
+        drive(DRIVE_SPEED / 2,  23,10);
         sleep(200);
         faceAngle(0);
 
@@ -78,7 +78,7 @@ public class WobblePowershotAuton extends MecanumAutonomous {
     }
 
     private void fireShot() {
-        sleep(3000);
+        sleep(3500);
         robot.flicker.setPosition(0);
         sleep(1000);
         robot.flicker.setPosition(0.6);

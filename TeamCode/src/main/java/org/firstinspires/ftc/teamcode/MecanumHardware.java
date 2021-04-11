@@ -47,6 +47,7 @@ public class MecanumHardware {
         launcherLeft = hardwareMap.get(DcMotor.class, "launcherLeft");
         launcherRight = hardwareMap.get(DcMotor.class, "launcherRight");
 
+        ramp.setDirection(DcMotorSimple.Direction.REVERSE);
         launcherLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
         wheelIntake = hardwareMap.get(DcMotor.class, "wheelIntake");
