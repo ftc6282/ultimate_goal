@@ -55,7 +55,6 @@ public class MecanumTeleOp extends LinearOpMode {
         ElapsedTime shooterTime = new ElapsedTime();
         int previousPos = 0;
 
-
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
             telemetry.addLine("Opmode Active");
@@ -152,11 +151,10 @@ public class MecanumTeleOp extends LinearOpMode {
             shooterTime.reset();
             previousPos = currentPos;
 
-            if (gamepad2.left_trigger > 0) {
-                robot.launcherRight.setPower(1);
-                robot.launcherLeft.setPower(1);
-            } else if (gamepad2.left_bumper){
-                double target = 1.5;
+            if (gamepad2.left_bumper || gamepad2.left_trigger > 0) {
+
+                double target = gamepad2.left_bumper ? 1.5 : 1.43;
+
                 double current = rps;
 
                 if(shooterController == null)
