@@ -53,7 +53,7 @@ public class MecanumHardware {
         wheelIntake = hardwareMap.get(DcMotor.class, "wheelIntake");
 
         flicker = hardwareMap.get(Servo.class, "flicker");
-        flicker.setPosition(0.6);
+        flicker.setPosition(1);
 
         wobble = hardwareMap.get(Servo.class, "wobble");
         wobble.setPosition(1);

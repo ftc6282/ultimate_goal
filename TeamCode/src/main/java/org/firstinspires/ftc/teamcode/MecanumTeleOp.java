@@ -50,6 +50,12 @@ public class MecanumTeleOp extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
+        PIDController shooterController = null;
+        double actualShooterPower = 0;
+        ElapsedTime shooterTime = new ElapsedTime();
+        int previousPos = 0;
+
+
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
             telemetry.addLine("Opmode Active");
@@ -136,32 +142,44 @@ public class MecanumTeleOp extends LinearOpMode {
                 robot.backLeft.setPower(v4);
             }
 
+            int currentPos = robot.launcherRight.getCurrentPosition();
+            double distance = currentPos - previousPos;
+            double speed = distance / shooterTime.seconds();
+
+            double rps = speed / 1120;
+            telemetry.addData("rps: ", rps);
+
+            shooterTime.reset();
+            previousPos = currentPos;
+
             if (gamepad2.left_trigger > 0) {
                 robot.launcherRight.setPower(1);
                 robot.launcherLeft.setPower(1);
             } else if (gamepad2.left_bumper){
-                int time = 10;
-
-                int position1 = robot.launcherRight.getCurrentPosition();
-                sleep(time);
-                int position2 = robot.launcherRight.getCurrentPosition();
-
-                double distance = position2 - position1;
-
-                double speed = distance / time;
-                double rps = speed * 1000 / 1120;
-                telemetry.addData("rps: ", rps);
-
                 double target = 1.5;
                 double current = rps;
-                if(current < target){
-                    robot.launcherRight.setPower(1);
-                }else{
-                    robot.launcherRight.setPower(0.6);
+
+                if(shooterController == null)
+                {
+                    shooterController = new PIDController(0.24,0.218,0.07,1.5);
                 }
+
+                double changeInPower = shooterController.control(target - current);
+                actualShooterPower += changeInPower;
+
+                if(actualShooterPower < 0){
+                    actualShooterPower = 0;
+                }else if(actualShooterPower > 1){
+                    actualShooterPower = 1;
+                }
+
+                robot.launcherRight.setPower(actualShooterPower);
+                telemetry.addData("actual: ", actualShooterPower);
+
             } else {
                 robot.launcherRight.setPower(0);
                 robot.launcherLeft.setPower(0);
+                shooterController = null;
             }
 
             if (gamepad2.dpad_up) {
@@ -182,9 +200,9 @@ public class MecanumTeleOp extends LinearOpMode {
 
 
             if (gamepad2.right_trigger > 0) {
-                robot.flicker.setPosition(0);
+                robot.flicker.setPosition(.75);
             } else {
-                robot.flicker.setPosition(0.6);
+                robot.flicker.setPosition(1.0);
             }
 
             if(gamepad1.a){

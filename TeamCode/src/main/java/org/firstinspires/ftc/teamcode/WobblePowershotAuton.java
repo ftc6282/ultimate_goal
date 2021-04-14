@@ -79,9 +79,9 @@ public class WobblePowershotAuton extends MecanumAutonomous {
 
     private void fireShot() {
         sleep(3500);
-        robot.flicker.setPosition(0);
+        robot.flicker.setPosition(0.75);
         sleep(1000);
-        robot.flicker.setPosition(0.6);
+        robot.flicker.setPosition(1);
 
     }
 
