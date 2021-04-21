@@ -153,7 +153,7 @@ public class MecanumTeleOp extends LinearOpMode {
 
             if (gamepad2.left_bumper || gamepad2.left_trigger > 0) {
 
-                double target = gamepad2.left_bumper ? 1.5 : 1.43;
+                double target = gamepad2.left_bumper ? 1.5 : 1.41;
 
                 double current = rps;
 
